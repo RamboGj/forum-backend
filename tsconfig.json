@@ -4,8 +4,14 @@
     "module": "nodenext",
     "target": "esnext",
     "types": [
-      "node"
+      "node",
+      "vitest/globals"
     ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

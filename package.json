@@ -24,6 +24,8 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "dayjs": "^1.11.21",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.8"
   }
 }
