@@ -1,0 +1,21 @@
+{
+  "name": "clean-ddd-backend",
+  "version": "1.0.0",
+  "description": "- Domain Experts\r     - Conversation\r - Ubiquitous Language\r     - User\r     - Customer\r     - Barman\r     - Attendant\r     - Member",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RamboGj/forum-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RamboGj/forum-backend/issues"
+  },
+  "homepage": "https://github.com/RamboGj/forum-backend#readme"
+}
