@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test:unit": "npx vitest run",
-    "test:unit:watch": "npx vitest run --watch"
+    "test:unit:watch": "npx vitest run --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "repository": {
     "type": "git",
@@ -20,8 +22,12 @@
   },
   "homepage": "https://github.com/RamboGj/forum-backend#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.1",
-    "typescript": "^6.0.3"
+    "eslint": "^10.4.1",
+    "globals": "^17.6.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1"
   },
   "dependencies": {
     "dayjs": "^1.11.21",
