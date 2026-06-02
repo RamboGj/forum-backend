@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { InMemoryQuestionsRepository } from "../../../../../test/repositories/in-memory-questions-repository";
 import { GetQuestionBySlugUseCase } from "./get-question-by-slug";
-import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { Question } from "../../enterprise/entities/question";
 import { QuestionNotFoundError } from "@/errors/question-not-found-error";
+import { InMemoryQuestionsRepository } from "@test/repositories/in-memory-questions-repository";
+import { makeQuestion } from "@test/factories/make-question";
 
 let questionsRepository: InMemoryQuestionsRepository
 /* sut => system under test */
@@ -16,10 +15,8 @@ describe("Get Question By Slug Use Case", () => {
     })
 
     it('should be able to get question by slug', async () => {
-         const questionCreated = Question.create({ 
-            content: "Nova question",
-            authorId: new UniqueEntityID("1"),
-            title: "Novo titulo",
+        const questionCreated = makeQuestion({
+            title: "Novo Titulo"
         })
 
         await questionsRepository.create(questionCreated)
@@ -30,11 +27,9 @@ describe("Get Question By Slug Use Case", () => {
     })
 
     it('should not be able to get question by inexistent slug', async () => {
-         const questionCreated = Question.create({ 
-            content: "Nova resposta",
-            authorId: new UniqueEntityID("1"),
-            title: "Novo titulo",
-        })
+         const questionCreated = makeQuestion({
+            title: "Novo Titulo"
+         })
 
         await questionsRepository.create(questionCreated)
 

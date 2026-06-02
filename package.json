@@ -23,6 +23,7 @@
   "homepage": "https://github.com/RamboGj/forum-backend#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@faker-js/faker": "^10.4.0",
     "@types/node": "^25.9.1",
     "eslint": "^10.4.1",
     "globals": "^17.6.0",
