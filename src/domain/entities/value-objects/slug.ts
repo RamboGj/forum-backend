@@ -1,15 +1,15 @@
 export class Slug {
-    public value: Slug
-    
+    public value: string
+
     constructor(value: string) {
-        this.value = Slug.createFromText(value)
+        this.value = value
     }
 
-    /** 
+    /**
         * Receives a string and normalize it as slug
         *
         * Example: "An example title" => "an-example-title"
-        * 
+        *
         * @param text {string}
     **/
     static createFromText(text: string) {
@@ -17,10 +17,10 @@ export class Slug {
             .normalize("NFKD")
             .toLowerCase()
             .trim()
-            .replace(/\s/g, "")
-            .replace(/[^\w]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]/g, "")
             .replace(/_/g, "-")
-            .replace(/--/g, "-")
+            .replace(/--+/g, "-")
             .replace(/-$/g, "")
 
         return new Slug(slug)
