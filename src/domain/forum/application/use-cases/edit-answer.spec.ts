@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { NotAllowedToDeleteOtherAuthorEntity } from "@/errors/not-allowed-to-delete-other-author-entity";
+import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity";
 import { EntityNotFoundError } from "@/errors/entity-not-found-error";
 import { EditAnswerUseCase } from "./edit-answer";
 import { InMemoryAnswersRepository } from "@test/repositories/in-memory-answers-repository";
@@ -45,7 +45,7 @@ describe("Edit Answer Use Case", () => {
             authorId: 'author-99',
             answerId: 'answer-1',
             content: 'Novo conteudo teste',
-        })).rejects.toBeInstanceOf(NotAllowedToDeleteOtherAuthorEntity)
+        })).rejects.toBeInstanceOf(NotAllowed)
     })
 
     it('should not be able to edit inexistent answer', async () => {

@@ -3,7 +3,7 @@ import { InMemoryQuestionsRepository } from "@test/repositories/in-memory-questi
 import { makeQuestion } from "@test/factories/make-question";
 import { DeleteQuestionUseCase } from "./delete-question";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { NotAllowedToDeleteOtherAuthorEntity } from "@/errors/not-allowed-to-delete-other-author-entity";
+import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity";
 import { EntityNotFoundError } from "@/errors/entity-not-found-error";
 
 let questionsRepository: InMemoryQuestionsRepository
@@ -41,7 +41,7 @@ describe("Delete Question Use Case", () => {
         await expect(sut.execute({
             questionId: "question-1",
             authorId: 'author-99'
-        })).rejects.toBeInstanceOf(NotAllowedToDeleteOtherAuthorEntity)
+        })).rejects.toBeInstanceOf(NotAllowed)
     })
 
     it('should not be able to delete inexistent question', async () => {

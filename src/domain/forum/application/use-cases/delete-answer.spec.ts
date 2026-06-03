@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { NotAllowedToDeleteOtherAuthorEntity } from "@/errors/not-allowed-to-delete-other-author-entity";
+import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity";
 import { makeAnswer } from "@test/factories/make-answer";
 import { InMemoryAnswersRepository } from "@test/repositories/in-memory-answers-repository";
 import { DeleteAnswerUseCase } from "./delete-answer";
@@ -42,7 +42,7 @@ describe("Delete Answer Use Case", () => {
         await expect(sut.execute({
             authorId: 'author-99',
             answerId: 'answer-1'
-        })).rejects.toBeInstanceOf(NotAllowedToDeleteOtherAuthorEntity)
+        })).rejects.toBeInstanceOf(NotAllowed)
     })
 
     it('should not be able to delete inexistent answer', async () => {

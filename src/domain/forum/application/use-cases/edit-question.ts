@@ -1,4 +1,4 @@
-import { NotAllowedToDeleteOtherAuthorEntity } from "@/errors/not-allowed-to-delete-other-author-entity"
+import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity"
 import { QuestionsRepository } from "../repositories/questions-repository"
 import { EntityNotFoundError } from "@/errors/entity-not-found-error"
 import { Question } from "../../enterprise/entities/question"
@@ -28,7 +28,7 @@ export class EditQuestionUseCase {
         }
 
         if (authorId !== question.authorId.toString()) {
-            throw new NotAllowedToDeleteOtherAuthorEntity()
+            throw new NotAllowed()
         }
 
         question.title = title

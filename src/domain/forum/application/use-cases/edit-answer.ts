@@ -1,4 +1,4 @@
-import { NotAllowedToDeleteOtherAuthorEntity } from "@/errors/not-allowed-to-delete-other-author-entity"
+import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity"
 import { EntityNotFoundError } from "@/errors/entity-not-found-error"
 import { Answer } from "../../enterprise/entities/answer"
 import { AnswersRepository } from "../repositories/answers-repository"
@@ -27,7 +27,7 @@ export class EditAnswerUseCase {
         }
 
         if (authorId !== answer.authorId.toString()) {
-            throw new NotAllowedToDeleteOtherAuthorEntity()
+            throw new NotAllowed()
         }
 
         answer.content = content

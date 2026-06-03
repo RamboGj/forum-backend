@@ -1,6 +1,6 @@
 import { EntityNotFoundError } from "@/errors/entity-not-found-error"
 import { AnswersRepository } from "../repositories/answers-repository"
-import { NotAllowedToDeleteOtherAuthorEntity } from "@/errors/not-allowed-to-delete-other-author-entity"
+import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity"
 
 interface DeleteAnswerUseCaseRequest {
     answerId: string
@@ -23,7 +23,7 @@ export class DeleteAnswerUseCase {
         }
 
         if (authorId !== answer.authorId.toString()) {
-            throw new NotAllowedToDeleteOtherAuthorEntity()
+            throw new NotAllowed()
         }
 
         await this.answersRepository.delete(answer)
