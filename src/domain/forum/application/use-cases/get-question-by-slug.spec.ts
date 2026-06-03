@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { GetQuestionBySlugUseCase } from "./get-question-by-slug";
-import { QuestionNotFoundError } from "@/errors/question-not-found-error";
 import { InMemoryQuestionsRepository } from "@test/repositories/in-memory-questions-repository";
 import { makeQuestion } from "@test/factories/make-question";
+import { EntityNotFoundError } from "@/errors/entity-not-found-error";
 
 let questionsRepository: InMemoryQuestionsRepository
 /* sut => system under test */
@@ -33,6 +33,6 @@ describe("Get Question By Slug Use Case", () => {
 
         await questionsRepository.create(questionCreated)
 
-        await expect(sut.execute({ slug: "random-slug" })).rejects.toBeInstanceOf(QuestionNotFoundError)
+        await expect(sut.execute({ slug: "random-slug" })).rejects.toBeInstanceOf(EntityNotFoundError)
     })
 })

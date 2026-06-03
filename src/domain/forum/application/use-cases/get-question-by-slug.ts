@@ -1,6 +1,6 @@
-import { QuestionNotFoundError } from "@/errors/question-not-found-error"
 import { Question } from "../../enterprise/entities/question"
 import { QuestionsRepository } from "../repositories/questions-repository"
+import { EntityNotFoundError } from "@/errors/entity-not-found-error"
 
 interface GetQuestionBySlugUseCaseRequest {
     slug: string
@@ -19,7 +19,7 @@ export class GetQuestionBySlugUseCase {
         const question = await this.questionsRepository.getBySlug(slug)
 
         if (!question) {
-            throw new QuestionNotFoundError()
+            throw new EntityNotFoundError()
         }
 
         return { question }
