@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { InMemoryQuestionsRepository } from "@test/repositories/in-memory-questions-repository";
 import { makeQuestion } from "@test/factories/make-question";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity";
+import { NotAllowedError } from "./errors/not-allowed-error";
 import { ChooseQuestionBestAnswerUseCase } from "./choose-question-best-answer";
 import { InMemoryAnswersRepository } from "@test/repositories/in-memory-answers-repository";
 import { makeAnswer } from "@test/factories/make-answer";
@@ -53,9 +53,12 @@ describe("Choose Question Best Answer Use Case", () => {
         await questionsRepository.create(newQuestion)
         await answersRepository.create(newAnswer)
 
-        await expect(sut.execute({
+        const result = await sut.execute({
             answerId: newAnswer.id.toString(),
             authorId: 'author-2'
-        })).rejects.toBeInstanceOf(NotAllowed)
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 })

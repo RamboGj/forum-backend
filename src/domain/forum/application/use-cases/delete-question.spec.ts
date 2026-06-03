@@ -3,8 +3,8 @@ import { InMemoryQuestionsRepository } from "@test/repositories/in-memory-questi
 import { makeQuestion } from "@test/factories/make-question";
 import { DeleteQuestionUseCase } from "./delete-question";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity";
-import { EntityNotFoundError } from "@/errors/entity-not-found-error";
+import { NotAllowedError } from "./errors/not-allowed-error";
+import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 
 let questionsRepository: InMemoryQuestionsRepository
 /* sut => system under test */
@@ -38,16 +38,22 @@ describe("Delete Question Use Case", () => {
 
         await questionsRepository.create(newQuestion)
 
-        await expect(sut.execute({
+        const result = await sut.execute({
             questionId: "question-1",
             authorId: 'author-99'
-        })).rejects.toBeInstanceOf(NotAllowed)
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 
     it('should not be able to delete inexistent question', async () => {
-        await expect(sut.execute({
+        const result = await sut.execute({
             questionId: "question-1",
             authorId: 'author-1'
-        })).rejects.toBeInstanceOf(EntityNotFoundError)
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(ResourceNotFoundError)
     })
 })

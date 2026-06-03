@@ -1,41 +1,47 @@
-import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity"
-import { QuestionsRepository } from "../repositories/questions-repository"
-import { EntityNotFoundError } from "@/errors/entity-not-found-error"
-import { Question } from "../../enterprise/entities/question"
+import { QuestionsRepository } from '../repositories/questions-repository'
+import { Question } from '../../enterprise/entities/question'
+import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 interface EditQuestionUseCaseRequest {
-    questionId: string
-    authorId: string
-    title: string
-    content: string
+  questionId: string
+  authorId: string
+  title: string
+  content: string
 }
 
- 
-interface EditQuestionUseCaseResponse {
+type EditQuestionUseCaseResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  {
     question: Question
-}
+  }
+>
 
 export class EditQuestionUseCase {
-    constructor(
-        private questionsRepository: QuestionsRepository
-    ) {}
+  constructor(private questionsRepository: QuestionsRepository) {}
 
-    async execute({ questionId, authorId, content, title }: EditQuestionUseCaseRequest): Promise<EditQuestionUseCaseResponse> {
-        const question = await this.questionsRepository.getById(questionId)
+  async execute({
+    questionId,
+    authorId,
+    content,
+    title,
+  }: EditQuestionUseCaseRequest): Promise<EditQuestionUseCaseResponse> {
+    const question = await this.questionsRepository.getById(questionId)
 
-        if (!question) {
-            throw new EntityNotFoundError()
-        }
-
-        if (authorId !== question.authorId.toString()) {
-            throw new NotAllowed()
-        }
-
-        question.title = title
-        question.content = content
-
-        const updatedQuestion = await this.questionsRepository.save(question)
-
-        return { question: updatedQuestion }
+    if (!question) {
+      return left(new ResourceNotFoundError())
     }
+
+    if (authorId !== question.authorId.toString()) {
+      return left(new NotAllowedError())
+    }
+
+    question.title = title
+    question.content = content
+
+    const updatedQuestion = await this.questionsRepository.save(question)
+
+    return right({ question: updatedQuestion })
+  }
 }

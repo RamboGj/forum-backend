@@ -3,7 +3,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryQuestionCommentsRepository } from '@test/repositories/in-memory-question-comments-repository'
 import { DeleteQuestionCommentUseCase } from './delete-question-comment'
 import { makeQuestionComment } from '@test/factories/make-question-comment'
-import { NotAllowed } from '@/errors/not-allowed-to-delete-other-author-entity'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 let questionCommentsRepository: InMemoryQuestionCommentsRepository
 let sut: DeleteQuestionCommentUseCase
@@ -44,11 +44,12 @@ describe('Delete Question Comment Use Case', () => {
 
     await questionCommentsRepository.create(newQuestionComment)
 
-    await await expect(
-      sut.execute({
-        authorId: 'author-9',
-        questionCommentId: 'question-comment-1',
-      }),
-    ).rejects.toBeInstanceOf(NotAllowed)
+    const result = await sut.execute({
+      authorId: 'author-9',
+      questionCommentId: 'question-comment-1',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

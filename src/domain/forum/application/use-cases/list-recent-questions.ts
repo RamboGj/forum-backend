@@ -1,22 +1,26 @@
-import { Question } from "../../enterprise/entities/question"
-import { QuestionsRepository } from "../repositories/questions-repository"
+import { Question } from '../../enterprise/entities/question'
+import { QuestionsRepository } from '../repositories/questions-repository'
+import { Either, right } from '@/core/either'
 
 interface ListRecentQuestionsUseCaseRequest {
-    page: number
+  page: number
 }
 
-interface ListRecentQuestionsUseCaseResponse {
+type ListRecentQuestionsUseCaseResponse = Either<
+  null,
+  {
     questions: Question[]
-}
+  }
+>
 
 export class ListRecentQuestionsUseCase {
-    constructor(
-        private questionsRepository: QuestionsRepository
-    ) {}
+  constructor(private questionsRepository: QuestionsRepository) {}
 
-    async execute({ page }: ListRecentQuestionsUseCaseRequest): Promise<ListRecentQuestionsUseCaseResponse> {
-        const questions = await this.questionsRepository.getManyRecent({ page })
+  async execute({
+    page,
+  }: ListRecentQuestionsUseCaseRequest): Promise<ListRecentQuestionsUseCaseResponse> {
+    const questions = await this.questionsRepository.getManyRecent({ page })
 
-        return { questions }
-    }
+    return right({ questions })
+  }
 }

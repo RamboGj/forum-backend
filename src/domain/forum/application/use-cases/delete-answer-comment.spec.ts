@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { NotAllowed } from '@/errors/not-allowed-to-delete-other-author-entity'
 import { DeleteAnswerCommentUseCase } from './delete-answer-comment'
 import { InMemoryAnswerCommentsRepository } from '@test/repositories/in-memory-answer-comments-repository'
 import { makeAnswerComment } from '@test/factories/make-answer-comment'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 let answerCommentsRepository: InMemoryAnswerCommentsRepository
 let sut: DeleteAnswerCommentUseCase
@@ -44,11 +44,11 @@ describe('Delete Answer Comment Use Case', () => {
 
     await answerCommentsRepository.create(newAnswerComment)
 
-    await expect(
-      sut.execute({
-        authorId: 'author-9',
-        answerCommentId: 'answer-comment-1',
-      }),
-    ).rejects.toBeInstanceOf(NotAllowed)
+    const result = await sut.execute({
+      authorId: 'author-9',
+      answerCommentId: 'answer-comment-1',
+    })
+
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

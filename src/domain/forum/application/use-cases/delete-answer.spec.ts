@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity";
+import { NotAllowedError } from "./errors/not-allowed-error";
 import { makeAnswer } from "@test/factories/make-answer";
 import { InMemoryAnswersRepository } from "@test/repositories/in-memory-answers-repository";
 import { DeleteAnswerUseCase } from "./delete-answer";
-import { EntityNotFoundError } from "@/errors/entity-not-found-error";
+import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 
 let answersRepository: InMemoryAnswersRepository
 /* sut => system under test */
@@ -39,16 +39,22 @@ describe("Delete Answer Use Case", () => {
 
         await answersRepository.create(newAnswer)
 
-        await expect(sut.execute({
+        const result = await sut.execute({
             authorId: 'author-99',
             answerId: 'answer-1'
-        })).rejects.toBeInstanceOf(NotAllowed)
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 
     it('should not be able to delete inexistent answer', async () => {
-        await expect(sut.execute({
+        const result = await sut.execute({
             answerId: "random-answer-99",
             authorId: 'author-1',
-        })).rejects.toBeInstanceOf(EntityNotFoundError)
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(ResourceNotFoundError)
     })
 })

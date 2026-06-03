@@ -23,9 +23,10 @@ describe("List Recent Questions Use Case", () => {
             createdAt: new Date(2026, 0, 20)
         }))
 
-        const { questions } = await sut.execute({ page: 1 })
+        const result = await sut.execute({ page: 1 })
 
-        expect(questions).toEqual([
+        expect(result.isRight()).toBe(true)
+        expect(result.value?.questions).toEqual([
             expect.objectContaining({
                 createdAt: new Date(2026, 0, 20)
             }),
@@ -43,8 +44,9 @@ describe("List Recent Questions Use Case", () => {
             await questionsRepository.create(makeQuestion())
         }
 
-        const { questions } = await sut.execute({ page: 2 })
+        const result = await sut.execute({ page: 2 })
 
-        expect(questions).toHaveLength(3)
+        expect(result.isRight()).toBe(true)
+        expect(result.value?.questions).toHaveLength(3)
     })
 })

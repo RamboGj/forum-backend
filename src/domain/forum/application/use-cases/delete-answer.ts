@@ -1,33 +1,38 @@
-import { EntityNotFoundError } from "@/errors/entity-not-found-error"
-import { AnswersRepository } from "../repositories/answers-repository"
-import { NotAllowed } from "@/errors/not-allowed-to-delete-other-author-entity"
+import { AnswersRepository } from '../repositories/answers-repository'
+import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 interface DeleteAnswerUseCaseRequest {
-    answerId: string
-    authorId: string
+  answerId: string
+  authorId: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface DeleteAnswerUseCaseResponse {}
+type DeleteAnswerUseCaseResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  {}
+>
 
 export class DeleteAnswerUseCase {
-    constructor(
-        private answersRepository: AnswersRepository
-    ) {}
+  constructor(private answersRepository: AnswersRepository) {}
 
-    async execute({ answerId, authorId }: DeleteAnswerUseCaseRequest): Promise<DeleteAnswerUseCaseResponse> {
-        const answer = await this.answersRepository.getById(answerId)
+  async execute({
+    answerId,
+    authorId,
+  }: DeleteAnswerUseCaseRequest): Promise<DeleteAnswerUseCaseResponse> {
+    const answer = await this.answersRepository.getById(answerId)
 
-        if (!answer) {
-            throw new EntityNotFoundError()
-        }
-
-        if (authorId !== answer.authorId.toString()) {
-            throw new NotAllowed()
-        }
-
-        await this.answersRepository.delete(answer)
-
-        return {}
+    if (!answer) {
+      return left(new ResourceNotFoundError())
     }
+
+    if (authorId !== answer.authorId.toString()) {
+      return left(new NotAllowedError())
+    }
+
+    await this.answersRepository.delete(answer)
+
+    return right({})
+  }
 }

@@ -30,12 +30,13 @@ describe('List Question Comments Use Case', () => {
       }),
     )
 
-    const { questionsComments } = await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-1',
       page: 1,
     })
 
-    expect(questionsComments).toHaveLength(3)
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.questionsComments).toHaveLength(3)
   })
 
   it('should be able to list paginated question comments', async () => {
@@ -47,11 +48,12 @@ describe('List Question Comments Use Case', () => {
       )
     }
 
-    const { questionsComments } = await sut.execute({
+    const result = await sut.execute({
       questionId: 'question-1',
       page: 2,
     })
 
-    expect(questionsComments).toHaveLength(3)
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.questionsComments).toHaveLength(3)
   })
 })

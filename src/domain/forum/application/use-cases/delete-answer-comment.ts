@@ -1,14 +1,18 @@
-import { EntityNotFoundError } from '@/errors/entity-not-found-error'
-import { NotAllowed } from '@/errors/not-allowed-to-delete-other-author-entity'
 import { AnswerCommentsRepository } from '../repositories/answer-comments-repository'
+import { Either, left, right } from '@/core/either'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 interface DeleteAnswerCommentUseCaseRequest {
   authorId: string
   answerCommentId: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface DeleteAnswerCommentUseCaseResponse {}
+type DeleteAnswerCommentUseCaseResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  {}
+>
 
 export class DeleteAnswerCommentUseCase {
   constructor(private answerCommentsRepository: AnswerCommentsRepository) {}
@@ -21,15 +25,15 @@ export class DeleteAnswerCommentUseCase {
       await this.answerCommentsRepository.getById(answerCommentId)
 
     if (!answerComment) {
-      throw new EntityNotFoundError()
+      return left(new ResourceNotFoundError())
     }
 
     if (answerComment.authorId.toString() !== authorId) {
-      throw new NotAllowed()
+      return left(new NotAllowedError())
     }
 
     await this.answerCommentsRepository.delete(answerComment)
 
-    return {}
+    return right({})
   }
 }
