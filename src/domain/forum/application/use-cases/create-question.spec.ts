@@ -24,7 +24,7 @@ describe('Create Question Use Case', () => {
     expect(result.isRight()).toBe(true)
     expect(result.value?.question.title).toEqual('Novo titulo')
     expect(result.value?.question.slug.value).toEqual('novo-titulo')
-    expect(result.value?.question.attachments).toEqual([
+    expect(result.value?.question.attachments.currentItems).toEqual([
       expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
       expect.objectContaining({ attachmentId: new UniqueEntityID('2') }),
     ])
