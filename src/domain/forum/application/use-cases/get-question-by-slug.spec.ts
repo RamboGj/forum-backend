@@ -3,14 +3,19 @@ import { GetQuestionBySlugUseCase } from './get-question-by-slug'
 import { InMemoryQuestionsRepository } from '@test/repositories/in-memory-questions-repository'
 import { makeQuestion } from '@test/factories/make-question'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { InMemoryQuestionAttachmentsRepository } from '@test/repositories/in-memory-question-attachments-repository'
 
 let questionsRepository: InMemoryQuestionsRepository
+let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 /* sut => system under test */
 let sut: GetQuestionBySlugUseCase
 
 describe('Get Question By Slug Use Case', () => {
   beforeEach(() => {
-    questionsRepository = new InMemoryQuestionsRepository()
+    questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository()
+    questionsRepository = new InMemoryQuestionsRepository(
+      questionAttachmentsRepository,
+    )
     sut = new GetQuestionBySlugUseCase(questionsRepository)
   })
 
