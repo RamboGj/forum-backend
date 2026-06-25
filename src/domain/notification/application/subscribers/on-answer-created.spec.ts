@@ -2,9 +2,30 @@ import { makeAnswer } from '@test/factories/make-answer'
 import { OnAnswerCreated } from './on-answer-created'
 import { InMemoryAnswersRepository } from '@test/repositories/in-memory-answers-repository'
 import { InMemoryAnswerAttachmentsRepository } from '@test/repositories/in-memory-answer-attachments-repository'
+import { InMemoryQuestionsRepository } from '@test/repositories/in-memory-questions-repository'
+import { InMemoryQuestionAttachmentsRepository } from '@test/repositories/in-memory-question-attachments-repository'
+import {
+  SendNotificationUseCase,
+  SendNotificationUseCaseRequest,
+  SendNotificationUseCaseResponse,
+} from '../usecases/send-notification'
+import { InMemoryNotificationsRepository } from '@test/repositories/in-memory-notifications-repository'
+import { makeQuestion } from '@test/factories/make-question'
+
+import { MockInstance } from 'vitest'
+import { waitFor } from '@test/utils/wait-for'
 
 let answersRepository: InMemoryAnswersRepository
+let notificationsRepository: InMemoryNotificationsRepository
+let questionsRepository: InMemoryQuestionsRepository
+let quesitonAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 let answerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
+let sendNotificationsUseCase: SendNotificationUseCase
+let sendNotificationExecuteSpy: MockInstance<
+  (
+    request: SendNotificationUseCaseRequest,
+  ) => Promise<SendNotificationUseCaseResponse>
+>
 
 describe('On Answer Created', () => {
   beforeEach(() => {
@@ -12,13 +33,27 @@ describe('On Answer Created', () => {
     answersRepository = new InMemoryAnswersRepository(
       answerAttachmentsRepository,
     )
+    quesitonAttachmentsRepository = new InMemoryQuestionAttachmentsRepository()
+    questionsRepository = new InMemoryQuestionsRepository(
+      quesitonAttachmentsRepository,
+    )
+    notificationsRepository = new InMemoryNotificationsRepository()
+    sendNotificationsUseCase = new SendNotificationUseCase(
+      notificationsRepository,
+    )
+
+    sendNotificationExecuteSpy = vi.spyOn(sendNotificationsUseCase, 'execute')
+
+    new OnAnswerCreated(questionsRepository, sendNotificationsUseCase)
   })
 
-  it('should send a notification when an answer is created', () => {
-    new OnAnswerCreated()
+  it('should send a notification when an answer is created', async () => {
+    const question = makeQuestion()
+    const answer = makeAnswer({ questionId: question.id })
 
-    const answer = makeAnswer()
-
+    questionsRepository.create(question)
     answersRepository.create(answer)
+
+    await waitFor(() => expect(sendNotificationExecuteSpy).toHaveBeenCalled())
   })
 })
